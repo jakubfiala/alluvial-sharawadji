@@ -1,0 +1,15 @@
+html, button {
+  font-family: Futura, sans-serif;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+#view {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #000;
+}
