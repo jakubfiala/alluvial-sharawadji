@@ -77,6 +77,7 @@ const initialiseRecorder = audio => stream => {
 
 const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', e => {
+  startButton.hidden = true;
   const audio = new AudioContext();
 
   navigator.mediaDevices
