@@ -21,7 +21,9 @@ const saveBlobAtPosition = blob => position => {
     .catch(err => console.error(`Upload error: ${err}`));
 };
 
-const saveRecording = (recorder, blob) => {
+const saveRecording = audio => (recorder, blob) => {
+  audio.close();
+
   navigator.geolocation
     .getCurrentPosition(
       saveBlobAtPosition(blob),
@@ -31,9 +33,8 @@ const saveRecording = (recorder, blob) => {
 
 const stopRecording = (recorder, audio) => {
   return function stopHandler(e) {
-    recorder.onComplete = saveRecording;
+    recorder.onComplete = saveRecording(audio);
     recorder.finishRecording();
-    audio.close();
 
     const button = e.target;
     button.innerText = 'Start Recording';
@@ -42,7 +43,7 @@ const stopRecording = (recorder, audio) => {
   };
 };
 
-const startRecording = recorder => {
+const startRecording = stream => {
   return function startHandler(e) {
     const audio = new AudioContext();
     const source = audio.createMediaStreamSource(stream);
@@ -62,7 +63,7 @@ const startRecording = recorder => {
 const initialiseRecorder = stream => {
   recordButton.hidden = false;
 
-  recordButton.addEventListener('click', startRecording(recorder));
+  recordButton.addEventListener('click', startRecording(stream));
 };
 
 navigator.mediaDevices
