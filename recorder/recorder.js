@@ -29,10 +29,11 @@ const saveRecording = (recorder, blob) => {
       { enableHighAccuracy: true });
 };
 
-const stopRecording = recorder => {
+const stopRecording = (recorder, audio) => {
   return function stopHandler(e) {
     recorder.onComplete = saveRecording;
     recorder.finishRecording();
+    audio.close();
 
     const button = e.target;
     button.innerText = 'Start Recording';
@@ -43,23 +44,23 @@ const stopRecording = recorder => {
 
 const startRecording = recorder => {
   return function startHandler(e) {
+    const audio = new AudioContext();
+    const source = audio.createMediaStreamSource(stream);
+
+    const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
+    recorder.setEncoding('mp3');
+
     const button = e.target;
     recorder.startRecording();
     button.innerText = 'Stop Recording';
 
     button.removeEventListener('click', startHandler);
-    button.addEventListener('click', stopRecording(recorder));
+    button.addEventListener('click', stopRecording(recorder, audio));
   };
 };
 
 const initialiseRecorder = stream => {
   recordButton.hidden = false;
-
-  const audio = new AudioContext();
-  const source = audio.createMediaStreamSource(stream);
-
-  const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
-  recorder.setEncoding('mp3');
 
   recordButton.addEventListener('click', startRecording(recorder));
 };
