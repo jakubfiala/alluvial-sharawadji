@@ -1,5 +1,7 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
+console.log('v1');
+
 const recordButton = document.getElementById('record-button');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
@@ -41,8 +43,9 @@ const stopRecording = recorder => {
   };
 };
 
-const startRecording = recorder => {
+const startRecording = (recorder, audio) => {
   return function startHandler(e) {
+    audio.resume();
     const button = e.target;
     recorder.startRecording();
     button.innerText = 'Stop Recording';
@@ -60,7 +63,7 @@ const initialiseRecorder = audio => stream => {
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
 
-  recordButton.addEventListener('click', startRecording(recorder));
+  recordButton.addEventListener('click', startRecording(recorder, audio));
 };
 
 
