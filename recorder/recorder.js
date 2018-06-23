@@ -21,8 +21,14 @@ const saveBlobAtPosition = blob => position => {
   output.innerText = JSON.stringify(metadata, null, 2);
 
   fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
-    .then(response => response.ok && output.innerText = 'upload successful')
-    .catch(err => output.innerText = `Upload error: ${err}`);
+    .then(response => {
+      if (response.ok) {
+        output.innerText = 'upload successful';
+      }
+    })
+    .catch(err => {
+      output.innerText = `Upload error: ${err}`;
+    });
 };
 
 const saveRecording = (recorder, blob) => {
