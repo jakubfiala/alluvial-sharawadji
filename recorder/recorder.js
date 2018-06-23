@@ -21,9 +21,7 @@ const saveBlobAtPosition = blob => position => {
     .catch(err => console.error(`Upload error: ${err}`));
 };
 
-const saveRecording = audio => (recorder, blob) => {
-  audio.close();
-
+const saveRecording = (recorder, blob) => {
   navigator.geolocation
     .getCurrentPosition(
       saveBlobAtPosition(blob),
@@ -31,9 +29,9 @@ const saveRecording = audio => (recorder, blob) => {
       { enableHighAccuracy: true });
 };
 
-const stopRecording = (recorder, audio) => {
+const stopRecording = recorder => {
   return function stopHandler(e) {
-    recorder.onComplete = saveRecording(audio);
+    recorder.onComplete = saveRecording;
     recorder.finishRecording();
 
     const button = e.target;
@@ -43,29 +41,34 @@ const stopRecording = (recorder, audio) => {
   };
 };
 
-const startRecording = stream => {
+const startRecording = recorder => {
   return function startHandler(e) {
-    const audio = new AudioContext();
-    const source = audio.createMediaStreamSource(stream);
-
-    const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
-    recorder.setEncoding('mp3');
-
     const button = e.target;
     recorder.startRecording();
     button.innerText = 'Stop Recording';
 
     button.removeEventListener('click', startHandler);
-    button.addEventListener('click', stopRecording(recorder, audio));
+    button.addEventListener('click', stopRecording(recorder));
   };
 };
 
-const initialiseRecorder = stream => {
+const initialiseRecorder = audio => stream => {
   recordButton.hidden = false;
 
-  recordButton.addEventListener('click', startRecording(stream));
+  const source = audio.createMediaStreamSource(stream);
+
+  const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
+  recorder.setEncoding('mp3');
+
+  recordButton.addEventListener('click', startRecording(recorder));
 };
 
-navigator.mediaDevices
-  .getUserMedia({ audio: true, video: false })
-  .then(initialiseRecorder);
+
+const startButton = document.getElementById('start-button');
+startButton.addEventListener('click', e => {
+  const audio = new AudioContext();
+
+  navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then(initialiseRecorder(audio));
+})
