@@ -36,8 +36,8 @@ const saveRecording = (req, res) => {
 
     const newSound = {
       name: id,
-      lat: "51.535373",
-      lng: "-0.056280",
+      lat: req.query.lat,
+      lng: req.query.lng,
       timestamp: req.query.timestamp,
       src: [ SOUND_URL_PREFIX.concat(Key) ],
       db: "80",
