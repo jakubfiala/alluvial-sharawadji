@@ -7,6 +7,7 @@ const app = express();
 
 app.use(bodyParser.raw({ type: 'audio/mpeg', limit: '100mb' }));
 app.use('/recorder', express.static('recorder'));
+app.use('/viewer', express.static('viewer'));
 
 app.put('/upload-recording', saveRecording);
 
