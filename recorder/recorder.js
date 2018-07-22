@@ -1,7 +1,5 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-console.log('v2');
-
 const recordButton = document.getElementById('record-button');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
