@@ -6,7 +6,7 @@ const soundwalk = location.search
   .split('=')
   .pop();
 
-const soundwalkURL = `https://s3-eu-west-1.amazonaws.com/ebre/${soundwalk}.json`;
+const soundwalkURL = `https://s3-eu-west-1.amazonaws.com/ebre/${soundwalk}/sounds.json`;
 
 const loadData = async url => {
   try {

@@ -40,3 +40,7 @@ main {
 #start-button {
   font-size: 2rem;
 }
+
+#output {
+  display: block;
+}

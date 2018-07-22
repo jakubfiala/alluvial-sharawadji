@@ -17,7 +17,7 @@ const S3 = new AWS.S3({
 const saveRecording = (req, res) => {
   const Body = req.body;
   const id = uuid();
-  const Key = `${id}.mp3`;
+  const Key = `${req.query.soundwalk}/${id}.mp3`;
 
   console.log('Body:', Body);
 
@@ -30,8 +30,9 @@ const saveRecording = (req, res) => {
     }
   });
 
-  S3.getObject({ Bucket, Key: 'sounds.json', ResponseContentType: 'application/json' }, (err, data) => {
-    const sosv = JSON.parse(data.Body.toString());
+  const dataKey = `${req.query.soundwalk}/sounds.json`;
+
+  S3.getObject({ Bucket, Key: dataKey, ResponseContentType: 'application/json' }, (err, data) => {
     console.log(data.Metadata);
 
     const newSound = {
@@ -44,11 +45,12 @@ const saveRecording = (req, res) => {
       pause: "0"
     };
 
-    sosv.sounds.push(newSound);
+    const soundData = JSON.parse(data.Body.toString());
+    soundData.sounds.push(newSound);
 
     S3.upload({
-      Key: 'sounds.json',
-      Body: JSON.stringify(sosv),
+      Key: dataKey,
+      Body: JSON.stringify(soundData),
       Bucket,
       ACL: 'public-read',
       ContentType: 'application/json'

@@ -1,10 +1,18 @@
+const soundwalk = location.search
+  .slice(1)
+  .split('&')
+  .filter(q => q.includes('soundwalk='))
+  .pop()
+  .split('=')
+  .pop();
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const recordButton = document.getElementById('record-button');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
 const getUploadURL = ({ timestamp, lat, lng }) => {
-  return `${UPLOAD_BASE_PATH}?timestamp=${timestamp}&lat=${lat}&lng=${lng}`;
+  return `${UPLOAD_BASE_PATH}?timestamp=${timestamp}&lat=${lat}&lng=${lng}&soundwalk=${soundwalk}`;
 };
 
 const saveBlobAtPosition = blob => position => {
@@ -68,6 +76,7 @@ const initialiseRecorder = audio => stream => {
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
+  recorder.setOptions({ mp3: { bitRate: 320 } });
 
   recordButton.addEventListener('click', startRecording(recorder, audio));
 };
