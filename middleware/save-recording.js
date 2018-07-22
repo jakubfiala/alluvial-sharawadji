@@ -40,9 +40,9 @@ const saveRecording = (req, res) => {
       lat: req.query.lat,
       lng: req.query.lng,
       timestamp: req.query.timestamp,
-      src: [ SOUND_URL_PREFIX.concat(Key) ],
-      db: "80",
-      pause: "0"
+      src: SOUND_URL_PREFIX.concat(Key),
+      db: 80,
+      loop: true
     };
 
     const soundData = JSON.parse(data.Body.toString());
