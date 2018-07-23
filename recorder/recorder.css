@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html, button {
   font-family: Futura, sans-serif;
 }
@@ -11,7 +15,7 @@ main {
   margin: 0 auto;
   max-width: 750px;
   padding: 2rem;
-  width: 100%;
+  width: 100vw;
 }
 
 #view {
@@ -43,4 +47,8 @@ main {
 
 #output {
   display: block;
+}
+
+#dl-progress {
+  width: 100%;
 }

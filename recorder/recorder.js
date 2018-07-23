@@ -9,6 +9,7 @@ const soundwalk = location.search
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const recordButton = document.getElementById('record-button');
+const downloadProgress = document.getElementById('dl-progress');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
 const getUploadURL = ({ timestamp, lat, lng }) => {
@@ -17,6 +18,7 @@ const getUploadURL = ({ timestamp, lat, lng }) => {
 
 const saveBlobAtPosition = blob => position => {
   console.log(blob, position);
+  position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
 
   const metadata = {
     timestamp: position.timestamp,
@@ -24,25 +26,34 @@ const saveBlobAtPosition = blob => position => {
     lng: position.coords.longitude
   };
 
-  output.innerText = JSON.stringify(metadata, null, 2);
+  const xhr = new XMLHttpRequest();
+  xhr.open('PUT', getUploadURL(metadata), true);
 
-  fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
-    .then(response => {
-      if (response.ok) {
-        output.innerText = 'upload successful';
-      }
-    })
-    .catch(err => {
-      output.innerText = `Upload error: ${err}`;
-    });
+  xhr.addEventListener('load', () => output.innerText = 'upload successful');
+  xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
+  xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
+
+  xhr.send(blob);
+  downloadProgress.hidden = false;
+
+  // fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
+  //   .then(response => {
+  //     if (response.ok) {
+  //       output.innerText = 'upload successful';
+  //     }
+  //   })
+  //   .catch(err => {
+  //     output.innerText = `Upload error: ${err}`;
+  //   });
 };
 
 const saveRecording = (recorder, blob) => {
-  navigator.geolocation
-    .getCurrentPosition(
-      saveBlobAtPosition(blob),
-      err => console.error(err),
-      { enableHighAccuracy: true });
+  saveBlobAtPosition(blob)(null);
+  // navigator.geolocation
+  //   .getCurrentPosition(
+  //     saveBlobAtPosition(blob),
+  //     err => console.error(err),
+  //     { enableHighAccuracy: true });
 };
 
 const stopRecording = recorder => {
@@ -76,7 +87,7 @@ const initialiseRecorder = audio => stream => {
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
-  recorder.setOptions({ mp3: { bitRate: 320 } });
+  recorder.setOptions({ mp3: { bitRate: 192 } });
 
   recordButton.addEventListener('click', startRecording(recorder, audio));
 };
