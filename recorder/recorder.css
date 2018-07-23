@@ -52,3 +52,7 @@ main {
 #dl-progress {
   width: 100%;
 }
+
+#player, #dl-progress, #output {
+  margin: 1em auto;
+}

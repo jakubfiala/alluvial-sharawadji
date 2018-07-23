@@ -10,6 +10,8 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const recordButton = document.getElementById('record-button');
 const downloadProgress = document.getElementById('dl-progress');
+const player = document.getElementById('player');
+
 const UPLOAD_BASE_PATH = '/upload-recording';
 
 const getUploadURL = ({ timestamp, lat, lng }) => {
@@ -17,6 +19,8 @@ const getUploadURL = ({ timestamp, lat, lng }) => {
 };
 
 const saveBlobAtPosition = blob => position => {
+  player.src = URL.createObjectURL(blob);
+
   console.log(blob, position);
   position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
 
