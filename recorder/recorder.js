@@ -29,9 +29,16 @@ const saveBlobAtPosition = blob => position => {
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(metadata), true);
 
-  xhr.addEventListener('load', () => output.innerText = 'upload successful');
   xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
   xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
+
+  xhr.addEventListener('load', () => {
+    if (xhr.status !== 200) {
+      output.innerText = `Upload error: ${xhr.status}`
+    } else {
+      output.innerText = 'upload successful';
+    }
+  });
 
   xhr.send(blob);
   downloadProgress.hidden = false;
