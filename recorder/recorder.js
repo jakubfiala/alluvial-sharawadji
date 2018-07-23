@@ -97,8 +97,8 @@ const initialiseRecorder = audio => stream => {
   const source = audio.createMediaStreamSource(stream);
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
-  recorder.setEncoding('mp3');
-  recorder.setOptions({ mp3: { bitRate: 192 } });
+  // recorder.setEncoding('mp3');
+  // recorder.setOptions({ mp3: { bitRate: 192 } });
 
   recordButton.addEventListener('click', startRecording(recorder, audio));
 };
