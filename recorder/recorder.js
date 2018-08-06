@@ -21,6 +21,15 @@ const getUploadURL = ({ timestamp, lat, lng }) => {
 const saveBlobAtPosition = blob => position => {
   player.src = URL.createObjectURL(blob);
 
+  const reader = new FileReader()
+
+  reader.addEventListener("loadend", () => {
+     const audioData = new Uint8Array(reader.result);
+     console.log(audioData);
+  });
+
+  reader.readAsArrayBuffer(blob);
+
   console.log(blob, position);
   position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
 
@@ -44,7 +53,7 @@ const saveBlobAtPosition = blob => position => {
     }
   });
 
-  xhr.send(blob);
+  // xhr.send(blob);
   downloadProgress.hidden = false;
 
   // fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
@@ -97,8 +106,8 @@ const initialiseRecorder = audio => stream => {
   const source = audio.createMediaStreamSource(stream);
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
-  // recorder.setEncoding('mp3');
-  // recorder.setOptions({ mp3: { bitRate: 192 } });
+  recorder.setEncoding('mp3');
+  recorder.setOptions({ mp3: { bitRate: 160 } });
 
   recordButton.addEventListener('click', startRecording(recorder, audio));
 };
