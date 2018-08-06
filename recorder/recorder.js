@@ -102,10 +102,8 @@ const startRecording = (recorder, audio) => {
 
 const initialiseRecorder = audio => stream => {
   recordButton.hidden = false;
-  const track = stream.getAudioTracks().pop();
-  console.log(track.getSettings());
-
   const source = audio.createMediaStreamSource(stream);
+  console.log(source.channelCount);
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
