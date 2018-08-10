@@ -31,15 +31,16 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
 
 const saveBlobAtPosition = blob => position => {
   player.src = URL.createObjectURL(blob);
+  player.hidden = false;
 
-  const reader = new FileReader();
+  // const reader = new FileReader();
 
-  reader.addEventListener("loadend", () => {
-     const audioData = new Uint8Array(reader.result);
-     console.log(audioData);
-  });
+  // reader.addEventListener("loadend", () => {
+  //    const audioData = new Uint8Array(reader.result);
+  //    console.log(audioData);
+  // });
 
-  reader.readAsArrayBuffer(blob);
+  // reader.readAsArrayBuffer(blob);
 
   console.log(blob, position);
   position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
@@ -126,7 +127,7 @@ const visualiser = analyser => {
 };
 
 const initialiseRecorder = audio => stream => {
-  recordButton.hidden = false;
+  recordButton.setAttribute('aria-hidden', 'false');
   const source = audio.createMediaStreamSource(stream);
   const analyser = audio.createAnalyser();
 
@@ -147,19 +148,13 @@ startButton.addEventListener('click', e => {
   let countdown = 5;
   const audio = new AudioContext();
 
-  const countdownFn = () => {
-    if (countdown) {
-      startButton.innerText = countdown;
-      countdown -= 1;
-      setTimeout(countdownFn, 1000);
-    } else {
-      startButton.hidden = true;
+  startButton.disabled = true;
+  startButton.innerText = 'Starting…';
+  setTimeout(() => {
+    startButton.setAttribute('aria-hidden', 'true');
 
-      navigator.mediaDevices
-        .getUserMedia({ audio: true, video: false })
-        .then(initialiseRecorder(audio));
-    }
-  };
-
-  countdownFn();
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: false })
+      .then(initialiseRecorder(audio));
+  }, 5000);
 })

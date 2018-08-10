@@ -18,6 +18,18 @@ main {
   width: 100vw;
 }
 
+h1 {
+  margin-bottom: 0;
+}
+
+h1 + h2 {
+  margin-top: 0.5rem;
+}
+
+h1, h2 {
+  text-align: center;
+}
+
 #view {
   width: 100%;
   height: 500px;
@@ -26,6 +38,8 @@ main {
 }
 
 #record-button {
+  display: none;
+  margin: 0 auto;
   width: 200px;
   height: 200px;
   color: white;
@@ -36,6 +50,10 @@ main {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+}
+
+#record-button[aria-hidden="false"] {
+  display: block;
 }
 
 #record-button-text {
@@ -62,6 +80,12 @@ main {
 
 #start-button {
   font-size: 2rem;
+  display: block;
+  margin: 1rem auto;
+}
+
+#start-button[aria-hidden="true"] {
+  display: none;
 }
 
 #output {
