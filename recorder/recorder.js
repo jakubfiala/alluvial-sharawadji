@@ -6,6 +6,81 @@ const soundwalk = location.search
   .split('=')
   .pop();
 
+const savedSoundsList = document.getElementById('saved-sounds-list');
+const savedSoundsSection = document.getElementById('saved-sounds');
+
+const database = new Dexie("alluvial-sharawadji");
+database
+  .version(1)
+  .stores({
+    sounds: '++id,timestamp,soundwalk,uploaded'
+  });
+
+const saveBlobLocally = (sound, metadata) => {
+  return database.sounds
+    .put(Object.assign({}, metadata, { sound, soundwalk, uploaded: false }))
+    .then(() => {
+      console.info('saved sound to local DB', sound);
+      console.dir(metadata);
+    })
+    .catch(err => {
+      console.error('Could not save sound to local DB', sound);
+      console.dir(metadata);
+    })
+};
+
+const createCheckMark = () => {
+  const mark = document.createElement('span');
+  mark.innerHTML = '&#9989;';
+  return mark;
+}
+
+const checkPendingUploads = () => {
+  database.open()
+    .then(() => {
+      database.sounds
+        .toArray()
+        .then(sounds => {
+          savedSoundsSection.hidden = !sounds.length;
+          while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
+
+          sounds.forEach(s => {
+            const listItem = document.createElement('li');
+            const itemPlayer = new Audio();
+            itemPlayer.controls = true;
+            itemPlayer.src = URL.createObjectURL(s.sound);
+
+            listItem.appendChild(itemPlayer);
+            savedSoundsList.appendChild(listItem);
+
+            if (s.uploaded) {
+              listItem.classList.add('uploaded');
+            }
+
+            if (navigator.onLine && !s.uploaded) {
+              console.info('trying to upload', s);
+
+              saveBlobAtPosition(s.sound)(
+                {
+                  timestamp: s.timestamp,
+                  coords: { lat: s.lat, lng: s.lng }
+                },
+                false,
+                () => {
+                  listItem.classList.add('uploaded');
+                  s.uploaded = true;
+                  database.sounds.put(s);
+                }
+              );
+            }
+          });
+        });
+    })
+};
+
+checkPendingUploads();
+
+
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const recordButton = document.getElementById('record-button');
@@ -30,18 +105,14 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
   };
 }
 
-const saveBlobAtPosition = blob => position => {
+const saveBlobAtPosition = blob => (
+  position,
+  saveLocally = true,
+  success = () => {},
+  error = () => {}
+) => {
   player.src = URL.createObjectURL(blob);
   player.hidden = false;
-
-  // const reader = new FileReader();
-
-  // reader.addEventListener("loadend", () => {
-  //    const audioData = new Uint8Array(reader.result);
-  //    console.log(audioData);
-  // });
-
-  // reader.readAsArrayBuffer(blob);
 
   console.log(blob, position);
   position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
@@ -52,17 +123,23 @@ const saveBlobAtPosition = blob => position => {
     lng: position.coords.longitude
   };
 
+  if (saveLocally) saveBlobLocally(blob, metadata);
+
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(metadata), true);
 
   xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
   xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
 
+
+
   xhr.addEventListener('load', () => {
     if (xhr.status !== 200) {
       output.innerText = `Upload error: ${xhr.status}`
+      error();
     } else {
       output.innerText = 'upload successful';
+      success();
     }
   });
 
@@ -82,12 +159,12 @@ const saveBlobAtPosition = blob => position => {
 
 const saveRecording = (recorder, blob) => {
   // uncomment for local debug
-  // saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
-  navigator.geolocation
-    .getCurrentPosition(
-      saveBlobAtPosition(blob),
-      err => console.error(err),
-      { enableHighAccuracy: true });
+  saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
+  // navigator.geolocation
+  //   .getCurrentPosition(
+  //     saveBlobAtPosition(blob),
+  //     err => console.error(err),
+  //     { enableHighAccuracy: true });
 };
 
 const toggleRecording = (recorder, audio, visualiser) => {
@@ -140,7 +217,9 @@ const createVisualiser = analyser => {
 };
 
 const initialiseRecorder = audio => stream => {
+  console.log('initialising');
   recordButton.setAttribute('aria-hidden', 'false');
+
   const source = audio.createMediaStreamSource(stream);
   const analyser = audio.createAnalyser();
 

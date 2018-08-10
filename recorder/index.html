@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="recorder.css">
   <script src="lib/web-audio-recorder/WebAudioRecorder.min.js"></script>
   <script type="module" defer src="recorder.js" ></script>
+  <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
 </head>
 <body>
   <main>
@@ -18,13 +19,26 @@
       <span id="record-button-text">Record</span>
     </button>
     <output id="output"></output>
-    <audio id="player" controls src="" hidden/>
-    <meter hidden id="dl-progress" name="dl-progress" min="0" max="1" low="0" high="0.9" optimum="1" value="0"/>
+    <audio id="player" controls src="" hidden></audio>
+    <meter hidden id="dl-progress" name="dl-progress" min="0" max="1" low="0" high="0.9" optimum="1" value="0"></meter>
+    <section id="saved-sounds" hidden>
+      <h2>My Sounds</h2>
+      <ul id="saved-sounds-list">
+      </ul>
+    </section>
     <section id="description">
+      <hr/>
+      <p>
+        <em>Alluvial Sharawadji</em> is a crowdsourced interactive artwork/workshop
+        combining collaborative field recording with low-cost,
+        ubiquitous web technologies to communicate the experience of a local sound environment
+        to audiences who are distant in both time and space.
+      </p>
     </section>
-    <section id="contact">
+    <footer>
       <p>Made by <a href="http://www.timcowlishaw.co.uk/">Tim Cowlishaw</a> and <a href="http://fiala.space">Jakub Fiala</a>.</p>
-    </section>
+      <p>Source code available on <a href="https://github.com/jakubfiala/alluvial-sharawadji">GitHub</a>
+    </footer>
   </main>
 </body>
 </html>

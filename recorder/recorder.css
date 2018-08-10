@@ -3,21 +3,37 @@
 }
 
 html, button {
-  font-family: Futura, sans-serif;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+button {
+  font-weight: bolder;
 }
 
 body, html {
   margin: 0;
   padding: 0;
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+footer {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+}
+
+section {
+  margin-top: 2rem;
 }
 
 p {
-  font-family: Helvetica, sans-serif;
+  line-height: 1.4;
 }
 
 main {
   margin: 0 auto;
-  max-width: 750px;
+  max-width: 500px;
   padding: 2rem;
   width: 100vw;
 }
@@ -81,11 +97,35 @@ h1, h2 {
   background-color: rgb(220, 0, 0);
 }
 
+#saved-sounds-list {
+  display: block;
+  padding: 0;
+}
+
+#saved-sounds-list li {
+  display: flex;
+}
+
+#saved-sounds-list li audio {
+  display: inline-block;
+  flex: 1;
+  vertical-align: middle;
+}
+
+#saved-sounds-list li.uploaded:after {
+  content: '\2705';
+  display: inline-block;
+  font-size: 1.5rem;
+  vertical-align: middle;
+  margin: 0 .5rem;
+}
 
 #start-button {
-  font-size: 2rem;
   display: block;
+  font-size: 1.8rem;
   margin: 1rem auto;
+  padding: 0.5rem;
+  width: 100%;
 }
 
 #start-button[aria-hidden="true"] {
