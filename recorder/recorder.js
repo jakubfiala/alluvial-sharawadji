@@ -11,6 +11,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const recordButton = document.getElementById('record-button');
 const downloadProgress = document.getElementById('dl-progress');
 const player = document.getElementById('player');
+const rmsIndicator = document.getElementById('rms-indicator');
 
 const UPLOAD_BASE_PATH = '/upload-recording';
 
@@ -18,10 +19,20 @@ const getUploadURL = ({ timestamp, lat, lng }) => {
   return `${UPLOAD_BASE_PATH}?timestamp=${timestamp}&lat=${lat}&lng=${lng}&soundwalk=${soundwalk}`;
 };
 
+if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
+  AnalyserNode.prototype.getFloatTimeDomainData = function(array) {
+      const uint8 = new Uint8Array(array.length);
+      this.getByteTimeDomainData(uint8);
+      for (var i = 0, imax = array.length; i < imax; i++) {
+        array[i] = (uint8[i] - 128) * 0.0078125;
+      }
+  };
+}
+
 const saveBlobAtPosition = blob => position => {
   player.src = URL.createObjectURL(blob);
 
-  const reader = new FileReader()
+  const reader = new FileReader();
 
   reader.addEventListener("loadend", () => {
      const audioData = new Uint8Array(reader.result);
@@ -68,7 +79,7 @@ const saveBlobAtPosition = blob => position => {
 };
 
 const saveRecording = (recorder, blob) => {
-  saveBlobAtPosition(blob)(null);
+  saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
   // navigator.geolocation
   //   .getCurrentPosition(
   //     saveBlobAtPosition(blob),
@@ -76,49 +87,78 @@ const saveRecording = (recorder, blob) => {
   //     { enableHighAccuracy: true });
 };
 
-const stopRecording = recorder => {
+const toggleRecording = (recorder, audio) => {
   return function stopHandler(e) {
-    recorder.onComplete = saveRecording;
-    recorder.finishRecording();
+    if (recorder.isRecording()) {
+      recorder.onComplete = saveRecording;
+      recorder.finishRecording();
 
-    const button = e.target;
-    button.innerText = 'Start Recording';
-    button.removeEventListener('click', stopHandler);
-    button.addEventListener('click', startRecording(recorder));
+      const button = e.target;
+      button.innerText = 'Record';
+    } else {
+      audio.resume();
+      const button = e.target;
+      recorder.startRecording();
+      button.innerText = 'Stop Recording';
+    }
   };
 };
 
-const startRecording = (recorder, audio) => {
-  return function startHandler(e) {
-    audio.resume();
-    const button = e.target;
-    recorder.startRecording();
-    button.innerText = 'Stop Recording';
+const visualiser = analyser => {
+  const data = new Float32Array(analyser.fftSize);
 
-    button.removeEventListener('click', startHandler);
-    button.addEventListener('click', stopRecording(recorder));
+  const render = () => {
+    analyser.getFloatTimeDomainData(data);
+
+    const rms = Math.sqrt(
+      Array.from(data)
+        .map(sample => (sample / 256) ** 2)
+        .reduce((sum, sampleSquared) => sum + sampleSquared, 0) / data.length
+    );
+
+    rmsIndicator.style.height = `${rms * 10000 * 60}%`;
+
+    requestAnimationFrame(render);
   };
+
+  requestAnimationFrame(render);
 };
 
 const initialiseRecorder = audio => stream => {
   recordButton.hidden = false;
   const source = audio.createMediaStreamSource(stream);
-  console.log(source.channelCount);
+  const analyser = audio.createAnalyser();
+
+  source.connect(analyser);
+  visualiser(analyser);
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 160 } });
 
-  recordButton.addEventListener('click', startRecording(recorder, audio));
+  recordButton.addEventListener('click', toggleRecording(recorder, audio));
 };
 
 
 const startButton = document.getElementById('start-button');
+
 startButton.addEventListener('click', e => {
-  startButton.hidden = true;
+  let countdown = 5;
   const audio = new AudioContext();
 
-  navigator.mediaDevices
-    .getUserMedia({ audio: true, video: false })
-    .then(initialiseRecorder(audio));
+  const countdownFn = () => {
+    if (countdown) {
+      startButton.innerText = countdown;
+      countdown -= 1;
+      setTimeout(countdownFn, 1000);
+    } else {
+      startButton.hidden = true;
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: false })
+        .then(initialiseRecorder(audio));
+    }
+  };
+
+  countdownFn();
 })
