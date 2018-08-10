@@ -11,6 +11,10 @@ body, html {
   padding: 0;
 }
 
+p {
+  font-family: Helvetica, sans-serif;
+}
+
 main {
   margin: 0 auto;
   max-width: 750px;

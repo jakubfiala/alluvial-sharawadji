@@ -13,10 +13,18 @@
     <h1>Alluvial Sharawadji</h1>
     <h2>/recorder</h2>
     <button id="start-button">Start</button>
-    <button id="record-button" aria-hidden="true"><span id="rms-indicator"></span><span id="record-button-text">Record</span></button>
+    <button id="record-button" aria-hidden="true">
+      <span id="rms-indicator"></span>
+      <span id="record-button-text">Record</span>
+    </button>
     <output id="output"></output>
     <audio id="player" controls src="" hidden/>
     <meter hidden id="dl-progress" name="dl-progress" min="0" max="1" low="0" high="0.9" optimum="1" value="0"/>
+    <section id="description">
+    </section>
+    <section id="contact">
+      <p>Made by <a href="http://www.timcowlishaw.co.uk/">Tim Cowlishaw</a> and <a href="http://fiala.space">Jakub Fiala</a>.</p>
+    </section>
   </main>
 </body>
 </html>

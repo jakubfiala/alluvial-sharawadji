@@ -12,6 +12,7 @@ const recordButton = document.getElementById('record-button');
 const downloadProgress = document.getElementById('dl-progress');
 const player = document.getElementById('player');
 const rmsIndicator = document.getElementById('rms-indicator');
+const recordButtonText = document.getElementById('record-button-text');
 
 const UPLOAD_BASE_PATH = '/upload-recording';
 
@@ -89,25 +90,37 @@ const saveRecording = (recorder, blob) => {
       { enableHighAccuracy: true });
 };
 
-const toggleRecording = (recorder, audio) => {
+const toggleRecording = (recorder, audio, visualiser) => {
   return function stopHandler(e) {
     if (recorder.isRecording()) {
       recorder.onComplete = saveRecording;
       recorder.finishRecording();
+      visualiser.stop();
 
       const button = e.target;
-      button.innerText = 'Record';
+      recordButtonText.innerText = 'Record';
     } else {
       audio.resume();
+      visualiser.start();
       const button = e.target;
       recorder.startRecording();
-      button.innerText = 'Stop Recording';
+      recordButtonText.innerText = 'Stop Recording';
     }
   };
 };
 
-const visualiser = analyser => {
+const createVisualiser = analyser => {
   const data = new Float32Array(analyser.fftSize);
+
+  let frameRequest;
+  const visualiser = {
+    start() {
+      frameRequest = requestAnimationFrame(render);
+    },
+    stop() {
+      cancelAnimationFrame(frameRequest);
+    }
+  };
 
   const render = () => {
     analyser.getFloatTimeDomainData(data);
@@ -120,10 +133,10 @@ const visualiser = analyser => {
 
     rmsIndicator.style.height = `${rms * 10000 * 60}%`;
 
-    requestAnimationFrame(render);
+    frameRequest = requestAnimationFrame(render);
   };
 
-  requestAnimationFrame(render);
+  return visualiser;
 };
 
 const initialiseRecorder = audio => stream => {
@@ -132,13 +145,13 @@ const initialiseRecorder = audio => stream => {
   const analyser = audio.createAnalyser();
 
   source.connect(analyser);
-  visualiser(analyser);
+  const visualiser = createVisualiser(analyser);
 
   const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 160 } });
 
-  recordButton.addEventListener('click', toggleRecording(recorder, audio));
+  recordButton.addEventListener('click', toggleRecording(recorder, audio, visualiser));
 };
 
 
