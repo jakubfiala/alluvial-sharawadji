@@ -19,9 +19,6 @@ const saveRecording = (req, res) => {
   const id = uuid();
   const Key = `${req.query.soundwalk}/${id}.mp3`;
 
-  console.log('Body:', Body);
-  res.send('ok');
-
   S3.upload({ Key, Body, Bucket, ACL: 'public-read', ContentType: 'audio/mpeg' }, (err, data) => {
     if (!err) {
       res.send('ok');
