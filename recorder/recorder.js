@@ -64,27 +64,28 @@ const saveBlobAtPosition = blob => position => {
     }
   });
 
-  // xhr.send(blob);
+  xhr.send(blob);
   downloadProgress.hidden = false;
 
-  // fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
-  //   .then(response => {
-  //     if (response.ok) {
-  //       output.innerText = 'upload successful';
-  //     }
-  //   })
-  //   .catch(err => {
-  //     output.innerText = `Upload error: ${err}`;
-  //   });
+  fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
+    .then(response => {
+      if (response.ok) {
+        output.innerText = 'upload successful';
+      }
+    })
+    .catch(err => {
+      output.innerText = `Upload error: ${err}`;
+    });
 };
 
 const saveRecording = (recorder, blob) => {
-  saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
-  // navigator.geolocation
-  //   .getCurrentPosition(
-  //     saveBlobAtPosition(blob),
-  //     err => console.error(err),
-  //     { enableHighAccuracy: true });
+  // uncomment for local debug
+  // saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
+  navigator.geolocation
+    .getCurrentPosition(
+      saveBlobAtPosition(blob),
+      err => console.error(err),
+      { enableHighAccuracy: true });
 };
 
 const toggleRecording = (recorder, audio) => {
