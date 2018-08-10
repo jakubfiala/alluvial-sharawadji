@@ -1,3 +1,6 @@
 .env
 audio/
 data/
+node_modules/
+.DS_Store
+dev.sqlite3
