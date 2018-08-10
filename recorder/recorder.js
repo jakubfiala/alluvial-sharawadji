@@ -35,47 +35,63 @@ const createCheckMark = () => {
   return mark;
 }
 
+const createSoundListItem = s => {
+  const listItem = document.createElement('li');
+  const itemPlayer = new Audio();
+  const itemDate = new Date(s.timestamp);
+  const itemLabel = document.createElement('p');
+  const playerContainer = document.createElement('div');
+
+  playerContainer.classList.add('sound-player-container');
+
+  itemPlayer.controls = true;
+  itemPlayer.src = URL.createObjectURL(s.sound);
+  itemLabel.innerText = `🎙 ${itemDate.toLocaleString()}`;
+
+  playerContainer.appendChild(itemPlayer);
+  listItem.appendChild(itemLabel);
+  listItem.appendChild(playerContainer);
+
+  return listItem;
+}
+
 const checkPendingUploads = () => {
   database.open()
-    .then(() => {
-      database.sounds
-        .toArray()
-        .then(sounds => {
-          savedSoundsSection.hidden = !sounds.length;
-          while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
+  .then(() => {
+    database.sounds
+    .toArray()
+    .then(sounds => {
+      savedSoundsSection.hidden = !sounds.length;
+      while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
 
-          sounds.forEach(s => {
-            const listItem = document.createElement('li');
-            const itemPlayer = new Audio();
-            itemPlayer.controls = true;
-            itemPlayer.src = URL.createObjectURL(s.sound);
+      sounds.forEach(s => {
+        const listItem = createSoundListItem(s);
+        savedSoundsList.appendChild(listItem);
 
-            listItem.appendChild(itemPlayer);
-            savedSoundsList.appendChild(listItem);
+        if (s.uploaded) {
+          listItem.classList.add('uploaded');
+        }
 
-            if (s.uploaded) {
+        if (navigator.onLine && !s.uploaded) {
+          console.info('trying to upload', s);
+          listItem.classList.add('uploading');
+
+          saveBlobRemotely(s)
+            .then(() => {
+              listItem.classList.remove('uploading');
               listItem.classList.add('uploaded');
-            }
-
-            if (navigator.onLine && !s.uploaded) {
-              console.info('trying to upload', s);
-
-              saveBlobAtPosition(s.sound)(
-                {
-                  timestamp: s.timestamp,
-                  coords: { lat: s.lat, lng: s.lng }
-                },
-                false,
-                () => {
-                  listItem.classList.add('uploaded');
-                  s.uploaded = true;
-                  database.sounds.put(s);
-                }
-              );
-            }
-          });
-        });
-    })
+              s.uploaded = true;
+              database.sounds.put(s);
+            })
+            .catch(() => {
+              listItem.classList.remove('uploading');
+              listItem.classList.add('error');
+              console.error('Could not upload sound', s)
+            });
+        }
+      });
+    });
+  })
 };
 
 checkPendingUploads();
@@ -105,25 +121,8 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
   };
 }
 
-const saveBlobAtPosition = blob => (
-  position,
-  saveLocally = true,
-  success = () => {},
-  error = () => {}
-) => {
-  player.src = URL.createObjectURL(blob);
-  player.hidden = false;
-
-  console.log(blob, position);
-  position = { timestamp: 0, coords: { latitude: 0, longitude: 0 }};
-
-  const metadata = {
-    timestamp: position.timestamp,
-    lat: position.coords.latitude,
-    lng: position.coords.longitude
-  };
-
-  if (saveLocally) saveBlobLocally(blob, metadata);
+const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
+  const { sound, ...metadata } = soundData;
 
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(metadata), true);
@@ -131,35 +130,33 @@ const saveBlobAtPosition = blob => (
   xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
   xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
 
-
-
   xhr.addEventListener('load', () => {
-    if (xhr.status !== 200) {
-      output.innerText = `Upload error: ${xhr.status}`
-      error();
+    if (xhr.status >= 300) {
+      reject();
     } else {
-      output.innerText = 'upload successful';
-      success();
+      resolve();
     }
   });
 
-  xhr.send(blob);
-  downloadProgress.hidden = false;
+  xhr.send(sound);
+});
 
-  fetch(getUploadURL(metadata), { method: 'PUT', body: blob, mode: 'same-origin' })
-    .then(response => {
-      if (response.ok) {
-        output.innerText = 'upload successful';
-      }
-    })
-    .catch(err => {
-      output.innerText = `Upload error: ${err}`;
-    });
+const saveBlobAtPosition = blob => position => {
+  position = { timestamp: Date.now(), coords: { latitude: 0, longitude: 0 }};
+
+  const metadata = {
+    timestamp: position.timestamp,
+    lat: position.coords.latitude,
+    lng: position.coords.longitude
+  };
+
+  saveBlobLocally(blob, metadata)
+    .then(checkPendingUploads);
 };
 
 const saveRecording = (recorder, blob) => {
   // uncomment for local debug
-  saveBlobAtPosition(blob)({ timestamp: 0, coords: {lat:0,lng:0} });
+  saveBlobAtPosition(blob)();
   // navigator.geolocation
   //   .getCurrentPosition(
   //     saveBlobAtPosition(blob),
@@ -181,7 +178,7 @@ const toggleRecording = (recorder, audio, visualiser) => {
       visualiser.start();
       const button = e.target;
       recorder.startRecording();
-      recordButtonText.innerText = 'Stop Recording';
+      recordButtonText.innerText = 'Stop';
     }
   };
 };
@@ -195,6 +192,7 @@ const createVisualiser = analyser => {
       frameRequest = requestAnimationFrame(render);
     },
     stop() {
+      rmsIndicator.style.height = '0%';
       cancelAnimationFrame(frameRequest);
     }
   };

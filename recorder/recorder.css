@@ -103,21 +103,45 @@ h1, h2 {
 }
 
 #saved-sounds-list li {
+  border-top: dashed 1px #aaa;
+  display: block;
+  margin-bottom: 1.2rem;
+  padding-top: 0.5rem;
+}
+
+.sound-player-container {
   display: flex;
+  margin-bottom: 1rem;
 }
 
 #saved-sounds-list li audio {
   display: inline-block;
-  flex: 1;
+  flex-grow: 1;
   vertical-align: middle;
 }
 
-#saved-sounds-list li.uploaded:after {
+li.uploading .sound-player-container:after {
+  content: '\23f3';
+}
+
+li.error .sound-player-container:after {
+  content: '\26a0';
+}
+
+li.uploaded .sound-player-container:after {
   content: '\2705';
+}
+
+li .sound-player-container:after {
   display: inline-block;
   font-size: 1.5rem;
   vertical-align: middle;
   margin: 0 .5rem;
+}
+
+#saved-sounds-list li p {
+  font-weight: bold;
+  margin: 0 0 0.25rem;
 }
 
 #start-button {
