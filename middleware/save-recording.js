@@ -21,7 +21,7 @@ const saveRecording = (req, res) => {
 
   S3.upload({ Key, Body, Bucket, ACL: 'public-read', ContentType: 'audio/mpeg' }, (err, data) => {
     if (!err) {
-      res.send('ok');
+      res.send({status: 'OK', id: id });
     } else {
       console.error(err);
       res.status(500).send(err);
