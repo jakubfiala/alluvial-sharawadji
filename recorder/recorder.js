@@ -142,8 +142,7 @@ const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
 });
 
 const saveBlobAtPosition = blob => position => {
-  position = { timestamp: Date.now(), coords: { latitude: 0, longitude: 0 }};
-
+  // position = { timestamp: Date.now(), coords: { latitude: 0, longitude: 0 }};
   const metadata = {
     timestamp: position.timestamp,
     lat: position.coords.latitude,
@@ -155,13 +154,11 @@ const saveBlobAtPosition = blob => position => {
 };
 
 const saveRecording = (recorder, blob) => {
-  // uncomment for local debug
-  saveBlobAtPosition(blob)();
-  // navigator.geolocation
-  //   .getCurrentPosition(
-  //     saveBlobAtPosition(blob),
-  //     err => console.error(err),
-  //     { enableHighAccuracy: true });
+  navigator.geolocation
+    .getCurrentPosition(
+      saveBlobAtPosition(blob),
+      err => console.error(err),
+      { enableHighAccuracy: true });
 };
 
 const toggleRecording = (recorder, audio, visualiser) => {

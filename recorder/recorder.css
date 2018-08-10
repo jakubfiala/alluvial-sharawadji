@@ -125,7 +125,7 @@ li.uploading .sound-player-container:after {
 }
 
 li.error .sound-player-container:after {
-  content: '\26a0';
+  content: '\274c';
 }
 
 li.uploaded .sound-player-container:after {
