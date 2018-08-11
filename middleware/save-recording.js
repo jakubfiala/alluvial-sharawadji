@@ -36,7 +36,7 @@ const saveRecording = async (req, res) => {
             soundwalk_name: soundwalk,
             lat: req.query.lat,
             lng: req.query.lng,
-            timestamp: new Date(req.query.timestamp).toISOString(),
+            timestamp: new Date(req.query.timestamp.parseInt()).toISOString(),
             src: SOUND_URL_PREFIX.concat(Key),
             db: 80,
             loop: true
