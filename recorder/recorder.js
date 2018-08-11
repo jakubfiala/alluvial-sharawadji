@@ -1,10 +1,11 @@
+const DEFAULT_SOUNDWALK = "test";
+
 const soundwalk = location.search
   .slice(1)
   .split('&')
   .filter(q => q.includes('soundwalk='))
-  .pop()
-  .split('=')
-  .pop();
+  .map(q => q.split('=').pop())
+  .pop() || DEFAULT_SOUNDWALK;
 
 const savedSoundsList = document.getElementById('saved-sounds-list');
 const savedSoundsSection = document.getElementById('saved-sounds');

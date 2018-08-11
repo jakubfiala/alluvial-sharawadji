@@ -1,10 +1,11 @@
+const DEFAULT_SOUNDWALK = "test";
+
 const soundwalk = location.search
-  .slice(1)
-  .split('&')
-  .filter(q => q.includes('soundwalk='))
-  .pop()
-  .split('=')
-  .pop();
+      .slice(1)
+      .split('&')
+      .filter(q => q.includes('soundwalk='))
+      .map(q => q.split('=').pop())
+      .pop() || DEFAULT_SOUNDWALK;
 
 const soundwalkURL = `/list-recordings?soundwalk=${soundwalk}`;
 
