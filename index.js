@@ -12,6 +12,7 @@ app.use('/viewer', express.static('viewer'));
 
 app.put('/upload-recording', saveRecording);
 app.get("/list-recordings", listRecordings);
+app.use("/", express.static("home"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.info(`Server running at ${PORT}`));
