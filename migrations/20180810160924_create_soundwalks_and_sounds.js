@@ -20,7 +20,7 @@ exports.up = function(knex, Promise) {
             t.integer("db").notNull();
             t.boolean("loop").notNull();
             t.unique(["name"]);
-            t.foreign('soundwalk_name').references('soundwalks.name');
+            t.foreign('soundwalk_name').references('soundwalks.name').onDelete("NO ACTION");
             t.index(["soundwalk_name"]);
         })
 
