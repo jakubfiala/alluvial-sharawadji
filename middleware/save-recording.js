@@ -20,35 +20,35 @@ const S3 = new AWS.S3({
 
 const saveRecording = async (req, res) => {
   res.send('ok');
-  // const Body = req.body;
-  // const id = uuid();
-  // const soundwalk = req.query.soundwalk || DEFAULT_SOUNDWALK;
-  // const Key = `${soundwalk}/${id}.mp3`;
-  //   try {
-  //       await new Promise(function(resolve, reject) {
-  //           S3.upload({ Key, Body, Bucket, ACL: 'public-read', ContentType: 'audio/mpeg' }, (err, data) => {
-  //               if (!err) {
-  //                   resolve(data);
-  //               } else {
-  //                   reject(err);
-  //               }
-  //           });
-  //       });
-  //       await knex("sounds").insert({
-  //           name: id,
-  //           soundwalk_name: soundwalk,
-  //           lat: req.query.lat,
-  //           lng: req.query.lng,
-  //           timestamp: new Date(parseInt(req.query.timestamp)).toISOString(),
-  //           src: SOUND_URL_PREFIX.concat(Key),
-  //           db: 80,
-  //           loop: true
-  //       });
-  //       res.send({status: "Ok", id: id});
-  //   } catch (err) {
-  //       console.error(err);
-  //       res.status(500).send(err);
-  //   }
+  const Body = req.body;
+  const id = uuid();
+  const soundwalk = req.query.soundwalk;// || DEFAULT_SOUNDWALK;
+  const Key = `${soundwalk}/${id}.mp3`;
+    try {
+        await new Promise(function(resolve, reject) {
+            S3.upload({ Key, Body, Bucket, ACL: 'public-read', ContentType: 'audio/mpeg' }, (err, data) => {
+                if (!err) {
+                    resolve(data);
+                } else {
+                    reject(err);
+                }
+            });
+        });
+        await knex("sounds").insert({
+            name: id,
+            soundwalk_name: soundwalk,
+            lat: req.query.lat,
+            lng: req.query.lng,
+            timestamp: new Date(parseInt(req.query.timestamp)).toISOString(),
+            src: SOUND_URL_PREFIX.concat(Key),
+            db: 80,
+            loop: true
+        });
+        res.send({status: "Ok", id: id});
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(err);
+    }
 };
 
 module.exports = saveRecording;
