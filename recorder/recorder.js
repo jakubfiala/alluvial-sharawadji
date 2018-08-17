@@ -17,17 +17,31 @@ database
     sounds: '++id,timestamp,soundwalk,uploaded,sound'
   });
 
-const saveBlobLocally = (sound, metadata) => {
-  return database.sounds
-    .put(Object.assign({}, metadata, { sound, soundwalk, uploaded: false }))
-    .then(() => {
-      console.info('saved sound to local DB', sound);
-      console.dir(metadata);
-    })
-    .catch(err => {
-      console.error('Could not save sound to local DB', sound, err);
-      console.dir(metadata);
-    })
+const saveBlobLocally = (blob, metadata) => {
+  const promiseHandler = (resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = e => {
+      const sound = e.target.result;
+
+      database.sounds
+        .put(Object.assign({}, metadata, { sound, soundwalk, uploaded: false }))
+        .then(() => {
+          console.info('saved sound to local DB', sound);
+          console.dir(metadata);
+          resolve(metadata);
+        })
+        .catch(err => {
+          console.error('Could not save sound to local DB', sound, err);
+          console.dir(metadata);
+          reject(err);
+        });
+    };
+
+    reader.readAsArrayBuffer(blob);
+  };
+
+  return new Promise(promiseHandler);
 };
 
 const createCheckMark = () => {
@@ -37,6 +51,8 @@ const createCheckMark = () => {
 }
 
 const createSoundListItem = s => {
+  const blob = new Blob(s.sound, { type: 'audio/mpeg' });
+
   const listItem = document.createElement('li');
   const itemPlayer = new Audio();
   const itemDate = new Date(s.timestamp);
@@ -46,7 +62,7 @@ const createSoundListItem = s => {
   playerContainer.classList.add('sound-player-container');
 
   itemPlayer.controls = true;
-  itemPlayer.src = URL.createObjectURL(s.sound);
+  itemPlayer.src = URL.createObjectURL(blob);
   itemLabel.innerText = `🎙 ${itemDate.toLocaleString()}`;
 
   playerContainer.appendChild(itemPlayer);
