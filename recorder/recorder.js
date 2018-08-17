@@ -51,8 +51,6 @@ const createCheckMark = () => {
 }
 
 const createSoundListItem = s => {
-  const blob = new Blob([ s.sound ], { type: 'audio/mpeg' });
-
   const listItem = document.createElement('li');
   const itemPlayer = new Audio();
   const itemDate = new Date(s.timestamp);
@@ -62,7 +60,7 @@ const createSoundListItem = s => {
   playerContainer.classList.add('sound-player-container');
 
   itemPlayer.controls = true;
-  itemPlayer.src = URL.createObjectURL(blob);
+  itemPlayer.src = URL.createObjectURL(s.sound);
   itemLabel.innerText = `🎙 ${itemDate.toLocaleString()}`;
 
   playerContainer.appendChild(itemPlayer);
@@ -83,6 +81,8 @@ const checkPendingUploads = () => {
       while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
 
       sounds.forEach(s => {
+        s.sound = new Blob([ s.sound ], { type: 'audio/mpeg' });
+
         const listItem = createSoundListItem(s);
         savedSoundsList.appendChild(listItem);
 
