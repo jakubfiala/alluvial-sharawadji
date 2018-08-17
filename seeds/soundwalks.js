@@ -12,6 +12,13 @@ exports.seed = function(knex, Promise) {
                 heading: 114.39,
                 pitch: 2
             },
+            {
+                name: "south-hackney",
+                lat: 51.5348,
+                lng: -0.0571874,
+                heading: 0,
+                pitch: 1
+            },
 
             {
                 name: "test",
