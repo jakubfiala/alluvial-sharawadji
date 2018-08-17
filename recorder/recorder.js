@@ -278,7 +278,7 @@ startButton.addEventListener('click', e => {
   }, 5000);
 })
 
-const currentVisibility = 'visible';
+let currentVisibility = 'visible';
 
 document.addEventListener('visibilitychange', e => {
   if (currentVisibility == 'hidden' && document.visibilityState == 'visible') {
