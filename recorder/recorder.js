@@ -152,12 +152,14 @@ const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
 
   xhr.addEventListener('load', () => {
     if (xhr.status >= 300) {
+      console.log(xhr.status, xhr.responseText);
       reject();
     } else {
       resolve();
     }
   });
 
+  console.log('sending', sound);
   xhr.send(sound);
 });
 
