@@ -81,7 +81,7 @@ const checkPendingUploads = () => {
       while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
 
       sounds.forEach(s => {
-        s.sound = new Blob([ s.sound ], { type: 'audio/mpeg' });
+        s.blob = new Blob([ s.sound ], { type: 'audio/mpeg' });
 
         const listItem = createSoundListItem(s);
         savedSoundsList.appendChild(listItem);
@@ -99,6 +99,8 @@ const checkPendingUploads = () => {
               listItem.classList.remove('uploading');
               listItem.classList.add('uploaded');
               s.uploaded = true;
+
+              delete s.blob;
               database.sounds.put(s);
             })
             .catch(err => {
@@ -127,7 +129,6 @@ const recordButtonText = document.getElementById('record-button-text');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
 const getUploadURL = metadata => {
-  console.log('meta', metadata);
   const timestamp = metadata.timestamp;
   const lat = metadata.lat;
   const lng = metadata.lng;
@@ -146,8 +147,7 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
 }
 
 const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
-  const sound = soundData.sound;
-  console.log(soundData);
+  const sound = soundData.blob;
 
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(soundData), true);
