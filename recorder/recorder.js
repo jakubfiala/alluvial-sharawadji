@@ -108,7 +108,8 @@ const checkPendingUploads = () => {
             });
         }
       });
-    });
+    })
+    .catch(err => console.error('Could not retrieve sounds', err));
   })
 };
 
