@@ -101,10 +101,10 @@ const checkPendingUploads = () => {
               s.uploaded = true;
               database.sounds.put(s);
             })
-            .catch(() => {
+            .catch(err => {
               listItem.classList.remove('uploading');
               listItem.classList.add('error');
-              console.error('Could not upload sound', s)
+              console.error('Could not upload sound', s, err)l
             });
         }
       });
