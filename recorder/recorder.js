@@ -127,9 +127,10 @@ const recordButtonText = document.getElementById('record-button-text');
 const UPLOAD_BASE_PATH = '/upload-recording';
 
 const getUploadURL = metadata => {
-  timestamp = metadata.timestamp;
-  lat = metadata.lat;
-  lng = metadata.lng;
+  console.log('meta', metadata);
+  const timestamp = metadata.timestamp;
+  const lat = metadata.lat;
+  const lng = metadata.lng;
 
   return `${UPLOAD_BASE_PATH}?timestamp=${timestamp}&lat=${lat}&lng=${lng}&soundwalk=${soundwalk}`;
 };
@@ -146,6 +147,7 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
 
 const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
   const sound = soundData.sound;
+  console.log(soundData);
 
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(soundData), true);
