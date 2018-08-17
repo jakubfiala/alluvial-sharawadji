@@ -60,7 +60,7 @@ const createSoundListItem = s => {
   playerContainer.classList.add('sound-player-container');
 
   itemPlayer.controls = true;
-  itemPlayer.src = URL.createObjectURL(s.sound);
+  itemPlayer.src = URL.createObjectURL(s.blob);
   itemLabel.innerText = `🎙 ${itemDate.toLocaleString()}`;
 
   playerContainer.appendChild(itemPlayer);
