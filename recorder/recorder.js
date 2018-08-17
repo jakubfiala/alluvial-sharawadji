@@ -199,10 +199,12 @@ const toggleRecording = (recorder, audio, visualiser) => {
       recordButtonText.innerText = 'Record';
     } else {
       audio.resume().then(() => {
-        visualiser.start();
-        const button = e.target;
-        recorder.startRecording();
-        recordButtonText.innerText = 'Stop';
+        setTimeout(() => {
+          visualiser.start();
+          const button = e.target;
+          recorder.startRecording();
+          recordButtonText.innerText = 'Stop';
+        }, 300);
       });
 
     }
