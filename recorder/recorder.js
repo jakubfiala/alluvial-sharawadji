@@ -198,11 +198,13 @@ const toggleRecording = (recorder, audio, visualiser) => {
       const button = e.target;
       recordButtonText.innerText = 'Record';
     } else {
-      audio.resume();
-      visualiser.start();
-      const button = e.target;
-      recorder.startRecording();
-      recordButtonText.innerText = 'Stop';
+      audio.resume().then(() => {
+        visualiser.start();
+        const button = e.target;
+        recorder.startRecording();
+        recordButtonText.innerText = 'Stop';
+      });
+
     }
   };
 };
