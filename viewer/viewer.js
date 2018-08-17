@@ -31,6 +31,54 @@ const loadDemo = async container => {
 
   const map = new google.maps.StreetViewPanorama(container, mapOptions);
   const sharawadji = new Sharawadji(sounds, map, { debug: true });
+
+  const minMovement = 0.2;
+  const xOffset =  0; // 0.051000000000000004;
+  const yOffset =  0; // -0.045;
+  const accelVelocity = 0.00001;
+  const turnVelocity = 2.0;
+
+  const roundFloat = function(x, y) {
+    return Math.round (x / y) * y;
+  };
+
+
+  const controlLoop = function() {
+    const gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+    if (!gamepads) {
+      return;
+    }
+
+    var gp = gamepads[0];
+    const x = roundFloat(gp.axes[0] + xOffset, minMovement);
+    const y = roundFloat(gp.axes[1] + yOffset, minMovement);
+    if (x != 0 ) {
+      const pov= map.pov;
+      pov["heading"] = (pov.heading + x * turnVelocity) % 360;
+      map.setPov(pov);
+    }
+
+    if (y != 0) {
+      const heading = map.pov.heading;
+      const position = map.position;
+      const newPosition = {};
+      newPosition.lat = position.lat() - accelVelocity * y * Math.cos(heading/180*Math.PI);
+      newPosition.lng = position.lng() - accelVelocity * y * Math.sin(heading/180*Math.PI);
+      map.setPosition(newPosition);
+    }
+
+    window.requestAnimationFrame(controlLoop);
+  };
+
+
+  window.addEventListener("gamepadconnected", function(e) {
+    var gp = navigator.getGamepads()[e.gamepad.index];
+    console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+                gp.index, gp.id,
+                gp.buttons.length, gp.axes.length);
+    window.requestAnimationFrame(controlLoop);
+  });
+
 }
 
 loadDemo(document.getElementById('view'));
