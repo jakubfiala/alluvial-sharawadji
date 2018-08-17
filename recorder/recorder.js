@@ -51,7 +51,7 @@ const createCheckMark = () => {
 }
 
 const createSoundListItem = s => {
-  const blob = new Blob(s.sound, { type: 'audio/mpeg' });
+  const blob = new Blob([ s.sound ], { type: 'audio/mpeg' });
 
   const listItem = document.createElement('li');
   const itemPlayer = new Audio();
