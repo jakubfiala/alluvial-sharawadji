@@ -277,3 +277,13 @@ startButton.addEventListener('click', e => {
       .then(initialiseRecorder(audio));
   }, 5000);
 })
+
+const currentVisibility = 'visible';
+
+document.addEventListener('visibilitychange', e => {
+  if (currentVisibility == 'hidden' && document.visibilityState == 'visible') {
+    location.reload();
+  } else {
+    currentVisibility = document.visibilityState;
+  }
+});
