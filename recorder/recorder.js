@@ -284,6 +284,6 @@ document.addEventListener('visibilitychange', e => {
   if (currentVisibility == 'hidden' && document.visibilityState == 'visible') {
     location.reload();
   } else {
-    currentVisibility = document.visibilityState;
+    currentVisibility = document.visibilityState == 'visible' ? 'visible' : 'hidden';
   }
 });
