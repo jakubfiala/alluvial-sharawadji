@@ -25,7 +25,7 @@ const saveBlobLocally = (sound, metadata) => {
       console.dir(metadata);
     })
     .catch(err => {
-      console.error('Could not save sound to local DB', sound);
+      console.error('Could not save sound to local DB', sound, err);
       console.dir(metadata);
     })
 };
