@@ -243,7 +243,7 @@ const createVisualiser = analyser => {
 };
 
 const initialiseRecorder = audio => stream => {
-  console.log('initialising');
+  console.log('initialising', stream);
   recordButton.setAttribute('aria-hidden', 'false');
 
   const source = audio.createMediaStreamSource(stream);
