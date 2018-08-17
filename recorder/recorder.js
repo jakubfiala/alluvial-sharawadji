@@ -265,6 +265,7 @@ const startButton = document.getElementById('start-button');
 startButton.addEventListener('click', e => {
   let countdown = 5;
   const audio = new AudioContext();
+  window.audio = audio;
 
   startButton.disabled = true;
   startButton.innerText = 'Starting…';
