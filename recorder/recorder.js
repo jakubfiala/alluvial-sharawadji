@@ -14,7 +14,7 @@ const database = new Dexie("alluvial-sharawadji");
 database
   .version(1)
   .stores({
-    sounds: '++id,timestamp,soundwalk,uploaded'
+    sounds: '++id,timestamp,soundwalk,uploaded,sound'
   });
 
 const saveBlobLocally = (sound, metadata) => {
@@ -60,6 +60,7 @@ const checkPendingUploads = () => {
   database.open()
   .then(() => {
     database.sounds
+    .where('soundwalk').equals(soundwalk)
     .toArray()
     .then(sounds => {
       savedSoundsSection.hidden = !sounds.length;
