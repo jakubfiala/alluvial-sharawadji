@@ -146,10 +146,9 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
 
 const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
   const sound = soundData.sound;
-  const metadata = soundData.metadata;
 
   const xhr = new XMLHttpRequest();
-  xhr.open('PUT', getUploadURL(metadata), true);
+  xhr.open('PUT', getUploadURL(soundData), true);
 
   xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
   xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
