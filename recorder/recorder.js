@@ -123,7 +123,8 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
 }
 
 const saveBlobRemotely = (soundData) => new Promise((resolve, reject) => {
-  const { sound, ...metadata } = soundData;
+  const sound = soundData.sound;
+  const metadata = soundData.metadata;
 
   const xhr = new XMLHttpRequest();
   xhr.open('PUT', getUploadURL(metadata), true);
