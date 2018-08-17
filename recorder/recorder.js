@@ -104,7 +104,7 @@ const checkPendingUploads = () => {
             .catch(err => {
               listItem.classList.remove('uploading');
               listItem.classList.add('error');
-              console.error('Could not upload sound', s, err)l
+              console.error('Could not upload sound', s, err);
             });
         }
       });
