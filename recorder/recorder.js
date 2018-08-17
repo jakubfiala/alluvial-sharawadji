@@ -208,6 +208,7 @@ const toggleRecording = (recorder, audio, visualiser) => {
       });
 
     }
+
   };
 };
 
