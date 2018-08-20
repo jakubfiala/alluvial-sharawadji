@@ -30,7 +30,7 @@ const loadDemo = async container => {
   };
 
   const map = new google.maps.StreetViewPanorama(container, mapOptions);
-  const sharawadji = new Sharawadji(sounds, map, { debug: true });
+  const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
 
   const minMovement = 0.2;
   const xOffset =  0; // 0.051000000000000004;
