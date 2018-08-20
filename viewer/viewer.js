@@ -7,6 +7,9 @@ const soundwalk = location.search
       .map(q => q.split('=').pop())
       .pop() || DEFAULT_SOUNDWALK;
 
+const soundwalkLabel = document.getElementById('soundwalk-label');
+soundwalkLabel.innerText = soundwalk || '';
+
 const soundwalkURL = `/list-recordings?soundwalk=${soundwalk}`;
 
 const loadData = async url => {

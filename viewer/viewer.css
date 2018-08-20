@@ -1,15 +1,92 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: #3c6a47;
+  font-size: 16px;
+}
+
 html, button {
-  font-family: Futura, sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
 
 body, html {
+  color: #ddd;
   margin: 0;
   padding: 0;
 }
 
 #view {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 3.5rem);
   position: relative;
   background: #000;
+}
+
+a {
+    color: #ddd;
+    text-decoration: underline;
+}
+
+footer {
+  padding: 0.5rem 0.5rem 1rem;
+}
+
+h1 {
+    font-weight: black;
+    letter-spacing: -0.06em;
+    margin: 0 0 0.5rem;
+}
+
+p, address {
+  margin: 0 0 0.5rem;
+}
+
+nav {
+  margin: 0.5rem 0 1rem;
+}
+
+nav a {
+    display: inline-block;
+    border: 1px solid rgba(220,220,220,0.2);
+    padding: .5rem;
+    margin: .125rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+nav a:hover {
+    background: #357b45;
+}
+
+#soundwalk-label {
+  font-weight: bold;
+}
+
+@media screen and (min-width: 960px) {
+  nav {
+    margin: 0;
+  }
+
+  h1 {
+    margin: 0;
+    flex-basis: 14ch;
+    flex-shrink: 0;
+  }
+
+  footer {
+    display: flex;
+    padding: 0.5rem;
+  }
+
+  p, address {
+    padding: 0 0.5rem;
+    margin: 0.5rem 0 0.5rem auto;
+  }
+
+  address {
+    font-style: normal;
+    flex-shrink: 0;
+  }
 }
