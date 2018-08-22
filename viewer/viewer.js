@@ -47,11 +47,9 @@ const loadDemo = async container => {
     startButton.addEventListener('click', e => {
       startButton.disabled = true;
       startButton.innerText = 'Loading';
+      mobileOverlay.hidden = true;
 
-      setTimeout(() => {
-        mobileOverlay.hidden = true;
-        const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
-      }, 5000);
+      const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
     })
   } else {
     const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
