@@ -43,6 +43,7 @@ section {
 
 p {
   line-height: 1.4;
+  margin-bottom: 1.5em;
 }
 
 main {
@@ -200,6 +201,13 @@ nav a:hover {
     background: #357b45;
 }
 
+hr {
+  width: 5ch;
+  margin: 2rem 0 1rem;
+  border: none;
+  border-top: solid 1px #ccc;
+}
+
 #soundwalk-label {
   font-weight: bold;
 }
@@ -220,7 +228,11 @@ nav a:hover {
     padding: 0.5rem;
   }
 
-  p, address {
+  p {
+    margin-bottom: 1.5rem;
+  }
+
+  header p, header address {
     padding: 0 0.5rem;
     margin: 0.5rem 0 0.5rem auto;
   }
