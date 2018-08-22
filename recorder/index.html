@@ -26,11 +26,18 @@
   <script src="lib/web-audio-recorder/WebAudioRecorder.min.js"></script>
   <script type="module" defer src="recorder.js" ></script>
   <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans" rel="stylesheet">
 </head>
 <body>
-  <main>
+  <header>
     <h1>Alluvial Sharawadji</h1>
-    <h2>Recorder</h2>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/viewer">Viewer</a>
+    </nav>
+    <p>SOUNDWALK: <output id="soundwalk-label"></output></p>
+  </header>
+  <main>
     <button id="start-button">Start</button>
     <button id="record-button" aria-hidden="true">
       <span id="rms-indicator"></span>
@@ -54,7 +61,7 @@
       </p>
     </section>
     <footer>
-      <p>Made by <a href="http://www.timcowlishaw.co.uk/">Tim Cowlishaw</a> and <a href="http://fiala.space">Jakub Fiala</a>.</p>
+      <address>By <a href="http://timcowlishaw.co.uk">Tim Cowlishaw</a> and <a href="#">Jakub Fiala</a>.</address>
       <p>Source code available on <a href="https://github.com/jakubfiala/alluvial-sharawadji">GitHub</a>
     </footer>
   </main>
