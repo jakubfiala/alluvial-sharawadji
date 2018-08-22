@@ -12,6 +12,15 @@ soundwalkLabel.innerText = soundwalk || '';
 
 const soundwalkURL = `/list-recordings?soundwalk=${soundwalk}`;
 
+const mobileOverlay = document.getElementById('mobile-overlay');
+const startButton = document.getElementById('start-button');
+let requireStartButton = false;
+
+if (/Android|iOS|iPhone|iPad/i.test(navigator.userAgent)) {
+  mobileOverlay.hidden = false;
+  requireStartButton = true;
+}
+
 const loadData = async url => {
   try {
     const response = await fetch(url);
@@ -33,7 +42,20 @@ const loadDemo = async container => {
   };
 
   const map = new google.maps.StreetViewPanorama(container, mapOptions);
-  const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
+
+  if (requireStartButton) {
+    startButton.addEventListener('click', e => {
+      startButton.disabled = true;
+      startButton.innerText = 'Loading';
+
+      setTimeout(() => {
+        mobileOverlay.hidden = true;
+        const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
+      }, 5000);
+    })
+  } else {
+    const sharawadji = new Sharawadji(sounds, map, { debug: true, compressor: true });
+  }
 
   const minMovement = 0.2;
   const xOffset =  0; // 0.051000000000000004;
