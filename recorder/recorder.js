@@ -257,7 +257,7 @@ const initialiseRecorder = audio => stream => {
   source.connect(analyser);
   const visualiser = createVisualiser(analyser);
 
-  const recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
+  recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 320 } });
 
@@ -266,6 +266,8 @@ const initialiseRecorder = audio => stream => {
 
 
 const startButton = document.getElementById('start-button');
+// this is awful but doing anything else would require like 1000 extra lines of code
+var recorder;
 
 startButton.addEventListener('click', e => {
   let countdown = 5;
@@ -287,7 +289,7 @@ let currentVisibility = 'visible';
 
 document.addEventListener('visibilitychange', e => {
   if (currentVisibility == 'hidden' && document.visibilityState == 'visible') {
-    location.reload();
+    if (recorder && !recorder.isRecording()) location.reload();
   } else {
     currentVisibility = document.visibilityState == 'visible' ? 'visible' : 'hidden';
   }
