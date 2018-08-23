@@ -22,10 +22,10 @@ exports.seed = function(knex, Promise) {
 
             {
                 name: "test",
-                lat: 51.561327,
-                lng: -0.076107,
-                heading: 267.04,
-                pitch: 12
+                lat: 51.512764,
+                lng: -0.2252838,
+                heading: 252.16,
+                pitch: 1
             },
             {
                 name: 'white-city',
