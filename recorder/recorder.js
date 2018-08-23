@@ -77,8 +77,10 @@ const checkPendingUploads = () => {
   database.open()
   .then(() => {
     database.sounds
-    .where('soundwalk').equals(soundwalk)
-    .toArray()
+    .where('soundwalk')
+    .equals(soundwalk)
+    .reverse()
+    .sortBy('timestamp')
     .then(sounds => {
       savedSoundsSection.hidden = !sounds.length;
       while(savedSoundsList.firstChild) savedSoundsList.removeChild(savedSoundsList.lastChild);
