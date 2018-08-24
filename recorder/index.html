@@ -39,13 +39,14 @@
   </header>
   <main>
     <button id="start-button">Start</button>
-    <button id="record-button" aria-hidden="true">
-      <span id="rms-indicator"></span>
-      <span id="record-button-text">Record</span>
-    </button>
+    <section id="recording-ui" hidden>
+      <canvas id="waveform"></canvas>
+      <button id="record-button">
+        <span id="rms-indicator"></span>
+        <span id="record-button-text">Record</span>
+      </button>
+    </section>
     <output id="output"></output>
-    <audio id="player" controls src="" hidden></audio>
-    <meter hidden id="dl-progress" name="dl-progress" min="0" max="1" low="0" high="0.9" optimum="1" value="0"></meter>
     <section id="saved-sounds" hidden>
       <h2>My Sounds</h2>
       <ul id="saved-sounds-list">
