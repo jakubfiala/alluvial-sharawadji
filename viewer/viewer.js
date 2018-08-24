@@ -36,12 +36,17 @@ const loadDemo = async container => {
 
   console.log(sounds);
 
-  const mapOptions = {
-    position: new google.maps.LatLng(lat, lng),
-    pov: { heading: parseFloat(heading), pitch: parseFloat(pitch) }
-  };
+  const startPosition = new google.maps.LatLng(lat, lng);
 
-  const map = new google.maps.StreetViewPanorama(container, mapOptions);
+  const map = new google.maps.Map(container, {
+    center: startPosition,
+    streetViewControl: false
+  });
+
+  const panorama = map.getStreetView();
+  panorama.setPosition(startPosition);
+  panorama.setPov({ heading: parseFloat(heading), pitch: parseFloat(pitch) });
+  panorama.setVisible(true);
 
   if (requireStartButton) {
     startButton.addEventListener('click', e => {
