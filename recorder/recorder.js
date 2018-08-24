@@ -71,13 +71,13 @@ const initialiseRecorder = audio => stream => {
 
   const source = audio.createMediaStreamSource(stream);
   const analyser = audio.createAnalyser();
-
   source.connect(analyser);
-  const visualiser = createVisualiser(analyser, canvas, 512);
 
   recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 320 } });
+
+  const visualiser = createVisualiser(recorder, analyser, canvas, 512);
 
   recordButton.addEventListener('click', toggleRecording(recorder, audio, visualiser));
 };

@@ -8,12 +8,31 @@ if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
   };
 }
 
-const createVisualiser = (analyser, canvas, bufferSize) => {
+const createTimeDisplay = () => {
+  const display = document.createElement('output');
+  display.classList.add('recording-time-display');
+  return display;
+}
+
+const secondsToTimeString = totalSeconds => {
+  let minutes = Math.floor(totalSeconds / 60);
+  let hours = Math.floor(minutes / 60);
+  minutes = minutes - hours * 60;
+  let seconds = Math.floor(totalSeconds - minutes * 60);
+
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+const createVisualiser = (recorder, analyser, canvas, bufferSize) => {
   const data = new Float32Array(analyser.fftSize);
   const buffer = (new Array(bufferSize)).map(x => 0);
 
   canvas.width = bufferSize * 2;
   canvas.height = 100;
+
+  const timeDisplay = createTimeDisplay();
+  canvas.insertAdjacentElement('afterend', timeDisplay);
+
   const context = canvas.getContext('2d');
   context.fillStyle = '#3c6a4733';
   context.fillRect(0, 50, canvas.width, 1);
@@ -31,6 +50,7 @@ const createVisualiser = (analyser, canvas, bufferSize) => {
 
   const render = () => {
     analyser.getFloatTimeDomainData(data);
+    timeDisplay.innerText = secondsToTimeString(recorder.recordingTime());
 
     const avg =
       Array.from(data)
