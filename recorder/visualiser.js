@@ -1,5 +1,14 @@
+if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
+  AnalyserNode.prototype.getFloatTimeDomainData = function(array) {
+      const uint8 = new Uint8Array(array.length);
+      this.getByteTimeDomainData(uint8);
+      for (var i = 0, imax = array.length; i < imax; i++) {
+        array[i] = (uint8[i] - 127.5) * 0.078125;
+      }
+  };
+}
+
 const createVisualiser = (analyser, canvas, bufferSize) => {
-  console.log('toggling');
   const data = new Float32Array(analyser.fftSize);
   const buffer = (new Array(bufferSize)).map(x => 0);
 
@@ -25,7 +34,7 @@ const createVisualiser = (analyser, canvas, bufferSize) => {
 
     const avg =
       Array.from(data)
-        .reduce((sum, sampleSquared) => sum + sampleSquared, 0) / data.length;
+        .reduce((sum, sample) => sum + sample, 0) / data.length;
 
     if (buffer.push(avg) > bufferSize) buffer.shift();
 

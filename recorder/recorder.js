@@ -35,16 +35,6 @@ const player = document.getElementById('player');
 const rmsIndicator = document.getElementById('rms-indicator');
 const recordButtonText = document.getElementById('record-button-text');
 
-if (!('getFloatTimeDomainData' in AnalyserNode.prototype)) {
-  AnalyserNode.prototype.getFloatTimeDomainData = function(array) {
-      const uint8 = new Uint8Array(array.length);
-      this.getByteTimeDomainData(uint8);
-      for (var i = 0, imax = array.length; i < imax; i++) {
-        array[i] = (uint8[i] - 128) * 0.0078125;
-      }
-  };
-}
-
 const saveRecording = (recorder, blob) => {
   navigator.geolocation
     .getCurrentPosition(
