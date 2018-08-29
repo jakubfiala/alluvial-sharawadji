@@ -190,3 +190,9 @@ nav a:hover {
     background: #357b45;
 }
 
+footer {
+    text-align: center;
+    font-size: 0.8em;
+    width: 66%;
+    margin: 3em auto;
+}
