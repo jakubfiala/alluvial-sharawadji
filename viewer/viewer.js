@@ -1,11 +1,49 @@
 const DEFAULT_SOUNDWALK = 'eufonic';
 
-const soundwalk = location.search
-      .slice(1)
-      .split('&')
-      .filter(q => q.includes('soundwalk='))
-      .map(q => q.split('=').pop())
-      .pop() || DEFAULT_SOUNDWALK;
+const getQuery = () => {
+  return location.search
+    .slice(1)
+    .split('&')
+    .reduce((obj, str) => {
+      const kv = str.split('=');
+      obj[kv[0]] = kv[1];
+      return obj;
+    }, {});
+};
+
+const setQuery = query => {
+  const queryString = Object
+    .entries(query)
+    .map(e => e.join('='))
+    .join('&');
+
+  const newURL = new URL(location.href);
+  newURL.search = queryString;
+  history.replaceState({ path: newURL.href }, '', newURL.href);
+};
+
+/**
+ * throttle wrapper which we need for scrolling listeners: http://www.ianlopshire.com/javascript-scroll-events-doing-it-right/
+ *
+ * @param      {Function}  callback  The function to throttle
+ * @param      {Number}    wait      The minimum time that needs to pass between successive function calls
+ * @return     {Function}    { the throttled function }
+ */
+const throttle = (callback, wait) => {
+  let go = true;
+  return () => {
+    if (go) {
+      go = false;
+      setTimeout(() => {
+        go = true;
+        callback.call();
+      }, wait);
+    }
+  };
+};
+
+const initialQuery = getQuery();
+const soundwalk = initialQuery.soundwalk || DEFAULT_SOUNDWALK;
 
 const soundwalkLabel = document.getElementById('soundwalk-label');
 soundwalkLabel.innerText = soundwalk || '';
@@ -31,12 +69,36 @@ const loadData = async url => {
   }
 };
 
+const savePosition = panorama => () => {
+  const position = panorama.getPosition();
+  const pov = panorama.getPov();
+
+  const lat = position.lat();
+  const lng = position.lng();
+  const heading = pov.heading;
+  const pitch = pov.pitch;
+
+  const newQuery = getQuery();
+  Object.assign(newQuery, { lat, lng, heading, pitch });
+
+  localStorage.setItem(`sharawadji-${soundwalk}-lat`, lat);
+  localStorage.setItem(`sharawadji-${soundwalk}-lng`, lng);
+  localStorage.setItem(`sharawadji-${soundwalk}-heading`, heading);
+  localStorage.setItem(`sharawadji-${soundwalk}-pitch`, pitch);
+  setQuery(newQuery);
+};
+
 const loadDemo = async container => {
   const { lat, lng, heading, pitch, sounds } = await loadData(soundwalkURL);
 
-  console.log(sounds);
+  const storedLat = localStorage.getItem(`sharawadji-${soundwalk}-lat`);
+  const storedLng = localStorage.getItem(`sharawadji-${soundwalk}-lng`);
+  const storedHeading = localStorage.getItem(`sharawadji-${soundwalk}-heading`);
+  const storedPitch = localStorage.getItem(`sharawadji-${soundwalk}-pitch`);
 
-  const startPosition = new google.maps.LatLng(lat, lng);
+  const startPosition = new google.maps.LatLng(
+    initialQuery.lat || storedLat || lat,
+    initialQuery.lng || storedLng || lng);
 
   const map = new google.maps.Map(container, {
     center: startPosition,
@@ -45,8 +107,14 @@ const loadDemo = async container => {
 
   const panorama = map.getStreetView();
   panorama.setPosition(startPosition);
-  panorama.setPov({ heading: parseFloat(heading), pitch: parseFloat(pitch) });
+  panorama.setPov({
+    heading: parseFloat(initialQuery.heading || storedHeading || heading),
+    pitch: parseFloat(initialQuery.pitch || storedPitch || pitch) });
   panorama.setVisible(true);
+
+  google.maps.event.addListener(panorama, 'pano_changed', throttle(savePosition(panorama), 500));
+  google.maps.event.addListener(panorama, 'position_changed', throttle(savePosition(panorama), 500));
+  google.maps.event.addListener(panorama, 'pov_changed', throttle(savePosition(panorama), 500));
 
   if (requireStartButton) {
     startButton.addEventListener('click', e => {
