@@ -54,10 +54,10 @@ const loadDemo = async container => {
       startButton.innerText = 'Loading';
       mobileOverlay.hidden = true;
 
-      const sharawadji = new Sharawadji(sounds, panorama, { debug: true, compressor: true });
+      const sharawadji = new Sharawadji(sounds, panorama, { debug: false, compressor: true });
     })
   } else {
-    const sharawadji = new Sharawadji(sounds, panorama, { debug: true, compressor: true });
+    const sharawadji = new Sharawadji(sounds, panorama, { debug: false, compressor: true });
   }
 
   const minMovement = 0.2;
