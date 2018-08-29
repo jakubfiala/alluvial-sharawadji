@@ -33,6 +33,13 @@ exports.seed = function(knex, Promise) {
                 lng: -0.2252838,
                 heading: 252.16,
                 pitch: 1
+            },
+            {
+                name: 'eufonic',
+                lat: 40.6165052,
+                lng: 0.5911836,
+                heading: 120.15,
+                pitch: 1
             }
         ]);
     });

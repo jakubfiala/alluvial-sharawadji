@@ -1,4 +1,4 @@
-const DEFAULT_SOUNDWALK = "test";
+const DEFAULT_SOUNDWALK = 'eufonic';
 
 const soundwalk = location.search
       .slice(1)
