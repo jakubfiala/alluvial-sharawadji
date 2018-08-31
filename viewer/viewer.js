@@ -156,6 +156,7 @@ const loadDemo = async container => {
     }
 
     if (y != 0) {
+      console.log("why am i not moving?");
       const heading = panorama.pov.heading;
       const position = panorama.position;
       const newPosition = {};
