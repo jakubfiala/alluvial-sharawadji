@@ -38,7 +38,7 @@ const recordButtonText = document.getElementById('record-button-text');
 const saveRecording = (recorder, blob) => {
   navigator.geolocation
     .getCurrentPosition(
-      position => SoundStorage.saveBlobAtPosition(position)(blob),
+      position => storage.saveBlobAtPosition(position)(blob),
       err => console.error(err),
       { enableHighAccuracy: true });
 };
@@ -100,7 +100,7 @@ startButton.addEventListener('click', e => {
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
       .then(initialiseRecorder(audio));
-  }, 0);
+  }, 5000);
 })
 
 let currentVisibility = 'visible';
