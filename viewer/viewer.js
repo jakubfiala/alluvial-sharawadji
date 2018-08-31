@@ -148,6 +148,7 @@ const loadDemo = async container => {
     var gp = gamepads[0];
     const x = roundFloat(gp.axes[0] + xOffset, minMovement);
     const y = roundFloat(gp.axes[1] + yOffset, minMovement);
+    console.log(x, y);
     if (x != 0 ) {
       const pov= panorama.pov;
       pov["heading"] = (pov.heading + x * turnVelocity) % 360;
