@@ -63,7 +63,7 @@ class SoundStorage {
       xhr.open('PUT', getUploadURL(this.soundwalk)(soundData), true);
 
       xhr.addEventListener('error', () => output.innerText = `Upload error: ${xhr.status}`);
-      xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
+      // xhr.addEventListener('progress', e => downloadProgress.value = e.loaded / e.total);
 
       xhr.addEventListener('load', () => {
         if (xhr.status >= 300) {
