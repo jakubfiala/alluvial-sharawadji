@@ -25,7 +25,7 @@ const secondsToTimeString = totalSeconds => {
 
 const createVisualiser = (recorder, analyser, canvas, bufferSize) => {
   const data = new Float32Array(analyser.fftSize);
-  const buffer = (new Array(bufferSize)).map(x => 0);
+  let buffer;
 
   canvas.width = bufferSize * 2;
   canvas.height = 100;
@@ -41,6 +41,7 @@ const createVisualiser = (recorder, analyser, canvas, bufferSize) => {
   let frameRequest;
   const visualiser = {
     start() {
+      buffer = (new Array(bufferSize)).map(x => 0);
       frameRequest = requestAnimationFrame(render);
     },
     stop() {
