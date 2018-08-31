@@ -38,7 +38,7 @@ const recordButtonText = document.getElementById('record-button-text');
 const saveRecording = (recorder, blob) => {
   navigator.geolocation
     .getCurrentPosition(
-      position => storage.saveBlobAtPosition(position)(blob),
+      position => storage.saveBlobAtPosition(blob)(position),
       err => console.error(err),
       { enableHighAccuracy: true });
 };
