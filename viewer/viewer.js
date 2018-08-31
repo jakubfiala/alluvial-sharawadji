@@ -148,7 +148,6 @@ const loadDemo = async container => {
     var gp = gamepads[0];
     const x = roundFloat(gp.axes[0] + xOffset, minMovement);
     const y = roundFloat(gp.axes[1] + yOffset, minMovement);
-    console.log(x, y);
     if (x != 0 ) {
       const pov= panorama.pov;
       pov["heading"] = (pov.heading + x * turnVelocity) % 360;
@@ -158,12 +157,9 @@ const loadDemo = async container => {
     if (y != 0) {
       const heading = panorama.getPov().heading;
       const position = panorama.getPosition();
-      console.log(heading);
-      console.log(position);
       const newPosition = {};
       newPosition.lat = position.lat() - accelVelocity * y * Math.cos(heading/180*Math.PI);
       newPosition.lng = position.lng() - accelVelocity * y * Math.sin(heading/180*Math.PI);
-      console.log(newPosition);
       panorama.setPosition(new google.maps.LatLng(newPosition.lat, newPosition.lng));
     }
 
