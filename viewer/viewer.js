@@ -156,9 +156,10 @@ const loadDemo = async container => {
     }
 
     if (y != 0) {
-      console.log("why am i not moving?");
-      const heading = panorama.pov.heading;
-      const position = panorama.position;
+      const heading = panorama.getPov().heading;
+      const position = panorama.getPosition();
+      console.log(heading);
+      console.log(position);
       const newPosition = {};
       newPosition.lat = position.lat() - accelVelocity * y * Math.cos(heading/180*Math.PI);
       newPosition.lng = position.lng() - accelVelocity * y * Math.sin(heading/180*Math.PI);
