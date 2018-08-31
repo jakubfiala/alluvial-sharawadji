@@ -163,6 +163,7 @@ const loadDemo = async container => {
       const newPosition = {};
       newPosition.lat = position.lat() - accelVelocity * y * Math.cos(heading/180*Math.PI);
       newPosition.lng = position.lng() - accelVelocity * y * Math.sin(heading/180*Math.PI);
+      console.log(newPosition);
       panorama.setPosition(newPosition);
     }
 
