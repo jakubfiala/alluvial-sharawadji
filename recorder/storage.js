@@ -88,8 +88,8 @@ class SoundStorage {
         lng: position.coords.longitude
       };
 
-      saveBlobLocally(blob, metadata)
-        .then(checkPendingUploads);
+      this.saveBlobLocally(blob, metadata)
+        .then(this.checkPendingUploads.bind(this));
     };
   }
 
@@ -126,7 +126,7 @@ class SoundStorage {
         console.info('trying to upload', s);
         listItem.classList.add('uploading');
 
-        saveBlobRemotely(s)
+        this.saveBlobRemotely(s)
           .then(() => {
             listItem.classList.remove('uploading');
             listItem.classList.add('uploaded');
