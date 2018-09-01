@@ -113,7 +113,17 @@ const loadDemo = async container => {
   panorama.setPov({
     heading: parseFloat(initialQuery.heading || storedHeading || heading),
     pitch: parseFloat(initialQuery.pitch || storedPitch || pitch) });
-  if (!('debug' in initialQuery)) panorama.setVisible(true);
+  if (!('debug' in initialQuery)) {
+    panorama.setVisible(true);
+  } else {
+    sounds.forEach(sound => {
+      const marker = new google.maps.Marker({
+        title: `${this.data.name} – ${(new Date(data.timestamp)).toLocaleString()}`,
+        position: new google.maps.LatLng(sound.lat, sound.lng),
+        map
+      });
+    });
+  }
 
   google.maps.event.addListener(panorama, 'pano_changed', throttle(savePosition(panorama), 500));
   google.maps.event.addListener(panorama, 'position_changed', throttle(savePosition(panorama), 500));
