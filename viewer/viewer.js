@@ -151,18 +151,18 @@ const loadDemo = async container => {
     const x = roundFloat(gp.axes[0] + xOffset, minMovement);
     const y = roundFloat(gp.axes[1] + yOffset, minMovement);
     if (x != 0 ) {
-      const pov= map.pov;
+      const pov= panorama.pov;
       pov["heading"] = (pov.heading + x * turnVelocity) % 360;
-      map.setPov(pov);
+      panorama.setPov(pov);
     }
 
     if (y != 0) {
-      const heading = map.pov.heading;
-      const position = map.position;
+      const heading = panorama.getPov().heading;
+      const position = panorama.getPosition();
       const newPosition = {};
       newPosition.lat = position.lat() - accelVelocity * y * Math.cos(heading/180*Math.PI);
       newPosition.lng = position.lng() - accelVelocity * y * Math.sin(heading/180*Math.PI);
-      map.setPosition(newPosition);
+      panorama.setPosition(new google.maps.LatLng(newPosition.lat, newPosition.lng));
     }
 
     window.requestAnimationFrame(controlLoop);
