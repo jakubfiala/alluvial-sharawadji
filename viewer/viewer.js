@@ -6,6 +6,8 @@ const getQuery = () => {
     .split('&')
     .reduce((obj, str) => {
       const kv = str.split('=');
+      if (kv.includes('')) return obj;
+
       obj[kv[0]] = kv[1];
       return obj;
     }, {});
@@ -110,7 +112,7 @@ const loadDemo = async container => {
   panorama.setPov({
     heading: parseFloat(initialQuery.heading || storedHeading || heading),
     pitch: parseFloat(initialQuery.pitch || storedPitch || pitch) });
-  panorama.setVisible(true);
+  if (!('debug' in initialQuery)) panorama.setVisible(true);
 
   google.maps.event.addListener(panorama, 'pano_changed', throttle(savePosition(panorama), 500));
   google.maps.event.addListener(panorama, 'position_changed', throttle(savePosition(panorama), 500));
@@ -122,10 +124,10 @@ const loadDemo = async container => {
       startButton.innerText = 'Loading';
       mobileOverlay.hidden = true;
 
-      const sharawadji = new Sharawadji(sounds, panorama, { debug: false, compressor: true });
+      const sharawadji = new Sharawadji(sounds, panorama, { debug: ('debug' in initialQuery), compressor: true });
     })
   } else {
-    const sharawadji = new Sharawadji(sounds, panorama, { debug: false, compressor: true });
+    const sharawadji = new Sharawadji(sounds, panorama, { debug: ('debug' in initialQuery), compressor: true });
   }
 
   const minMovement = 0.2;
