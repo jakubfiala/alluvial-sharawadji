@@ -118,7 +118,7 @@ const loadDemo = async container => {
   } else {
     sounds.forEach(sound => {
       const marker = new google.maps.Marker({
-        title: `${this.data.name} – ${(new Date(data.timestamp)).toLocaleString()}`,
+        title: `${sound.name} – ${(new Date(sound.timestamp)).toLocaleString()}`,
         position: new google.maps.LatLng(sound.lat, sound.lng),
         map
       });
