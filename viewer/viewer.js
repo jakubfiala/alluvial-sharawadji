@@ -104,7 +104,8 @@ const loadDemo = async container => {
 
   const map = new google.maps.Map(container, {
     center: startPosition,
-    streetViewControl: true
+    streetViewControl: true,
+    zoom: 12
   });
 
   const panorama = map.getStreetView();
