@@ -121,6 +121,10 @@ nav a:hover, #start-button:hover {
     padding: 0.5rem;
   }
 
+  footer .soundwalk {
+    margin: 0;
+  }
+
   p, address {
     padding: 0 0.5rem;
     margin: 0.5rem 0 0.5rem auto;
