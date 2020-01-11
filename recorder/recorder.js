@@ -73,7 +73,7 @@ const initialiseRecorder = audio => stream => {
   const analyser = audio.createAnalyser();
   source.connect(analyser);
 
-  recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/" });
+  recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/", numChannels: 1 });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 320 } });
 
@@ -97,8 +97,14 @@ startButton.addEventListener('click', e => {
   setTimeout(() => {
     startButton.setAttribute('aria-hidden', 'true');
 
+    const audioConstraints = {
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false,
+    };
+
     navigator.mediaDevices
-      .getUserMedia({ audio: true, video: false })
+      .getUserMedia({ audio: audioConstraints, video: false })
       .then(initialiseRecorder(audio));
   }, 5000);
 })
