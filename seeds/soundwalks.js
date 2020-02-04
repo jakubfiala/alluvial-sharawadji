@@ -40,7 +40,15 @@ exports.seed = function(knex, Promise) {
                 lng: 0.5911836,
                 heading: 120.15,
                 pitch: 1
+            },
+            {
+              name: 'barcelona',
+              lat: 41.377476,
+              lng: 2.1760804,
+              heading: 223.66,
+              pitch: 5
             }
+
         ]);
     });
 };
