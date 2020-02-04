@@ -73,7 +73,7 @@ const initialiseRecorder = audio => stream => {
   const analyser = audio.createAnalyser();
   source.connect(analyser);
 
-  recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/", numChannels: 1 });
+  recorder = new WebAudioRecorder(source, { workerDir: "lib/web-audio-recorder/", numChannels: 2 });
   recorder.setEncoding('mp3');
   recorder.setOptions({ mp3: { bitRate: 320 } });
 
